@@ -1,6 +1,3 @@
-# coffee-matcher
-
-
 
 ## Getting started
 
