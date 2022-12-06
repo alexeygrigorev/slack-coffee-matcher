@@ -1,10 +1,8 @@
 roulette:
-  channels:
-    C01S3EGKMJP: integration_test
   message: |+
     Hi <@{USER1}> and <@{USER2}>!
 
-    Congratulations, you got lucky and the lunch roulette chose you. Now schedule some time to have a chat!
+    Congratulations, you got lucky and the coffee matcher chose you. Now schedule some time to have a chat!
 
     Enjoy getting to know each other.
 

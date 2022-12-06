@@ -21,7 +21,6 @@ with open('config.yaml', 'rt') as f_in:
 
 
 message_template = config['roulette']['message']
-channels = config['roulette']['channels']
 
 
 def get_channel_participants(channel_id: str) -> List[str]:
@@ -83,24 +82,27 @@ def post_message(channel: str, message: str):
 
 
 def find_pais(users: List[str]) -> List[Tuple[str, str]]:
-    users_match = users.copy()
-    random.shuffle(users_match)
+    users_to_match = users.copy()
+    random.shuffle(users_to_match)
 
-    num_users = len(users)
+    pairs = []
 
-    for i in range(num_users):
-        if users[i] == users_match[i]:
-            j = random.randint(0, num_users - 1)
-            users_match[i], users_match[j] = users_match[j], users_match[i]
+    while len(users_to_match) > 1:
+        user1 = users_to_match.pop()
+        user2 = users_to_match.pop()
+        pairs.append((user1, user2))
 
-    dedup = set()
+    if len(users_to_match) == 1:
+        last_user = users_to_match.pop()
 
-    for i in range(num_users):
-        if users[i] > users_match[i]:
-            users[i], users_match[i] = users_match[i], users[i]
-        dedup.add((users[i], users_match[i]))
+        while True:
+            idx = random.randint(0, len(users) - 1)
+            if last_user == users[idx]:
+                continue
+            pairs.append((last_user, users[idx]))
+            break
 
-    return list(dedup)
+    return pairs
 
 
 def chat_roulette_dm(user_1: str, user_2: str, channel_name: str):
@@ -119,11 +121,6 @@ def run(channel: str):
 
     for user_1, user_2 in pairs:
         chat_roulette_dm(user_1, user_2, channel)
-
-
-def run_all():
-    for channel in channels:
-        run(channel)
 
 
 def lambda_handler(event, context):
